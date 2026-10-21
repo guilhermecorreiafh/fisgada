@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Fisgada.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c397c18cf276a95ab3f0702eae32bfc2e52afb9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+692dd1bcc54b57eceb5cf177338f8baa6e304958")]
 [assembly: System.Reflection.AssemblyProductAttribute("Fisgada.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Fisgada.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
