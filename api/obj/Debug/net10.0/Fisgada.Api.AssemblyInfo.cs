@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Fisgada.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75e61693a5296cbfb3351aede891ae9df49b5e30")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c397c18cf276a95ab3f0702eae32bfc2e52afb9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Fisgada.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Fisgada.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
