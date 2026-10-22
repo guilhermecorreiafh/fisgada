@@ -9,4 +9,5 @@ public class Usuario
     public string SenhaHash { get; set; } = string.Empty;
     public string? FotoUrl { get; set; }
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
+    public List<Pescaria> Pescarias { get; set; } = [];
 }

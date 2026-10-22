@@ -222,9 +222,14 @@ namespace Fisgada.Api.Migrations
                         .HasPrecision(6, 1)
                         .HasColumnType("decimal(6,1)");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EspecieId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Pescarias", t =>
                         {
@@ -285,10 +290,23 @@ namespace Fisgada.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Fisgada.Api.Models.Usuario", "Usuario")
+                        .WithMany("Pescarias")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Especie");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Fisgada.Api.Models.Especie", b =>
+                {
+                    b.Navigation("Pescarias");
+                });
+
+            modelBuilder.Entity("Fisgada.Api.Models.Usuario", b =>
                 {
                     b.Navigation("Pescarias");
                 });

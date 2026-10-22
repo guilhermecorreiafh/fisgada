@@ -6,7 +6,8 @@ public class Pescaria
 
     public int EspecieId { get; set; }
     public Especie Especie { get; set; } = null!;
-
+    public int UsuarioId { get; set; }
+    public Usuario Usuario { get; set; } = null!;
     public DateOnly Data { get; set; }
     public string Local { get; set; } = string.Empty;
     public string? Isca { get; set; }

@@ -1,8 +1,10 @@
 ﻿using Fisgada.Api.Data;
 using Fisgada.Api.Dtos;
 using Fisgada.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Fisgada.Api.Controllers;
 
@@ -14,6 +16,7 @@ public class PescariasController(AppDbContext db) : ControllerBase
     public async Task<IEnumerable<PescariaResponse>> Recentes() =>
         (await db.Pescarias
             .Include(p => p.Especie)
+            .Include(p => p.Usuario)
             .OrderByDescending(p => p.Data)
             .ThenByDescending(p => p.CriadoEm)
             .Take(50)
@@ -25,52 +28,67 @@ public class PescariasController(AppDbContext db) : ControllerBase
     {
         var pescaria = await db.Pescarias
             .Include(p => p.Especie)
+            .Include(p => p.Usuario)
             .FirstOrDefaultAsync(p => p.Id == id);
         if (pescaria is null) return NotFound();
         return pescaria.ToResponse();
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<PescariaResponse>> Criar(PescariaRequest request)
     {
         var erro = await Validar(request);
         if (erro is not null) return erro;
 
-        var pescaria = new Pescaria();
+        var pescaria = new Pescaria { UsuarioId = UsuarioLogadoId() };
         Aplicar(pescaria, request);
 
         db.Pescarias.Add(pescaria);
         await db.SaveChangesAsync();
-        await db.Entry(pescaria).Reference(p => p.Especie).LoadAsync();
+        await CarregarRelacionados(pescaria);
 
         return CreatedAtAction(nameof(Obter), new { id = pescaria.Id }, pescaria.ToResponse());
     }
 
+    [Authorize]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<PescariaResponse>> Atualizar(int id, PescariaRequest request)
     {
         var pescaria = await db.Pescarias.FindAsync(id);
         if (pescaria is null) return NotFound();
+        if (pescaria.UsuarioId != UsuarioLogadoId()) return Forbid();
 
         var erro = await Validar(request);
         if (erro is not null) return erro;
 
         Aplicar(pescaria, request);
         await db.SaveChangesAsync();
-        await db.Entry(pescaria).Reference(p => p.Especie).LoadAsync();
+        await CarregarRelacionados(pescaria);
 
         return pescaria.ToResponse();
     }
 
+    [Authorize]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Excluir(int id)
     {
         var pescaria = await db.Pescarias.FindAsync(id);
         if (pescaria is null) return NotFound();
+        if (pescaria.UsuarioId != UsuarioLogadoId()) return Forbid();
 
         db.Pescarias.Remove(pescaria);
         await db.SaveChangesAsync();
         return NoContent();
+    }
+
+    private int UsuarioLogadoId() =>
+        int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value);
+
+    private async Task CarregarRelacionados(Pescaria pescaria)
+    {
+        await db.Entry(pescaria).Reference(p => p.Especie).LoadAsync();
+        await db.Entry(pescaria).Reference(p => p.Usuario).LoadAsync();
     }
 
     private async Task<ActionResult?> Validar(PescariaRequest request)
@@ -84,7 +102,7 @@ public class PescariasController(AppDbContext db) : ControllerBase
         return ModelState.IsValid ? null : ValidationProblem(ModelState);
     }
 
-    private void Aplicar(Pescaria pescaria, PescariaRequest request)
+    private static void Aplicar(Pescaria pescaria, PescariaRequest request)
     {
         pescaria.EspecieId = request.EspecieId;
         pescaria.Data = request.Data;
