@@ -45,6 +45,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
              .WithMany(e => e.Pescarias)
              .HasForeignKey(x => x.EspecieId)
              .OnDelete(DeleteBehavior.Restrict);
+
+            p.HasOne(x => x.Usuario)
+                .WithMany(u => u.Pescarias)
+                .HasForeignKey(x => x.UsuarioId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 
