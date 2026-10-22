@@ -7,9 +7,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Especie> Especies => Set<Especie>();
     public DbSet<Pescaria> Pescarias => Set<Pescaria>();
+    public DbSet<Usuario> Usuarios => Set<Usuario>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Usuario>(u =>
+        {
+            u.Property(x => x.Nome).HasMaxLength(80).IsRequired();
+            u.Property(x => x.NomeUsuario).HasMaxLength(30).IsRequired();
+            u.Property(x => x.Email).HasMaxLength(120).IsRequired();
+            u.Property(x => x.SenhaHash).IsRequired();
+            u.Property(x => x.FotoUrl).HasMaxLength(500);
+            u.HasIndex(x => x.NomeUsuario).IsUnique();
+            u.HasIndex(x => x.Email).IsUnique();
+        });
+
         modelBuilder.Entity<Especie>(e =>
         {
             e.Property(x => x.NomePopular).HasMaxLength(80).IsRequired();
