@@ -9,4 +9,9 @@ public record CadastroRequest(
     [Required, EmailAddress(ErrorMessage = "E-mail inválido.")] string Email,
     [Required, MinLength(8, ErrorMessage = "A senha precisa ter pelo menos 8 caracteres.")] string Senha);
 
+public record LoginRequest(
+    [Required, EmailAddress(ErrorMessage = "E-mail inválido.")] string Email,
+    [Required] string Senha);
+
 public record UsuarioResponse(int Id, string Nome, string NomeUsuario, string Email);
+public record LoginResponse(string Token, UsuarioResponse Usuario);
